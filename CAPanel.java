@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.Font;
 import java.awt.Graphics;
 
-public class CAPanel extends JPanel implements ActionListener {
+public class CAPanel extends JPanel implements ActionListener, ObjectListener {
 
     public static final int TOTAL_PRESCALE_WIDTH = 18;
     public static final int TOTAL_PRESCALE_HEIGHT = 26;
@@ -18,12 +18,15 @@ public class CAPanel extends JPanel implements ActionListener {
 
     private int rule;
     private int scale_size;
+    private int board_size;
 
     private JLabel titleCard;
     private CAGrid grid;
     private JButton advanceButton;
     private JButton resetButton;
     private JButton fillButton;
+    private SettableNumberScroller valueScroller;
+    
 
     public CAPanel(int board_size, int scale_size) {
         // set up panel itself
@@ -32,6 +35,7 @@ public class CAPanel extends JPanel implements ActionListener {
         // init fields
         rule = 57;
         this.scale_size = scale_size;
+        this.board_size = board_size;
 
         // The title card
         titleCard = new JLabel();
@@ -58,11 +62,17 @@ public class CAPanel extends JPanel implements ActionListener {
         advanceButton.setBounds(12 * scale_size, 20 * scale_size, 5 * scale_size, 5*scale_size);
         initButton(advanceButton, new Color(0x0FC179), "advance");
 
+        // The value scroller;
+        valueScroller = new SettableNumberScroller("Value: ", rule);
+        valueScroller.setBounds(11 * scale_size, 1 * scale_size, 6 * scale_size, 1 * scale_size);
+        // valueScroller.addObjectListener(this);
+
         add(titleCard);
         add(grid);
         add(fillButton);
         add(resetButton);
         add(advanceButton);
+        add(valueScroller);
     }
 
     public void initButton(JButton b, Color bgColor, String command) {
@@ -81,7 +91,7 @@ public class CAPanel extends JPanel implements ActionListener {
 
         setBackground(Color.LIGHT_GRAY);
 
-        // 2. draw grid background
+        // draw border for grid
         g.setColor(Color.BLACK);
         int border_width = 1;
         g.fillRect(
@@ -89,6 +99,15 @@ public class CAPanel extends JPanel implements ActionListener {
             (3 * scale_size) - border_width, 
             (16 * scale_size) + (2*border_width), 
             (16 * scale_size) + (2*border_width));
+
+        // draw rectangles for buttons
+        // g.setColor(new Color(0x84E291));
+        // g.setColor(new Color(0x84, 0xE2, 0x91, 128));
+        // g.fillRect(10 * scale_size, 1 * scale_size, 1 * scale_size, 1 * scale_size); // left button
+        // g.fillRect(16 * scale_size, 1 * scale_size, 1 * scale_size, 1 * scale_size); // right button
+        // g.fillRect(12 * scale_size, 1 * scale_size, 3 * scale_size, 1 * scale_size);
+
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -98,6 +117,13 @@ public class CAPanel extends JPanel implements ActionListener {
             grid.reset();
         } else if(e.getActionCommand().equals("advance")) {
             grid.advance();
+        }
+    }
+
+    public void notified(String s) {
+        if(s.equals("value_changed")) {
+            grid = new CAGrid(board_size, board_size, valueScroller.getValue());
+            repaint();
         }
     }
 }

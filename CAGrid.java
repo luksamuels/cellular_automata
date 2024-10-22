@@ -86,7 +86,7 @@ public class CAGrid extends JPanel implements MouseListener {
             }
         }
 
-        // try gridlines?
+        // try grid lines?
         g.setColor(new Color(0x5866EA));
         for(int i = 1; i < height; i++) {
             g.drawLine(0, i * pixel_size, width * pixel_size, i * pixel_size);
