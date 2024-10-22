@@ -16,8 +16,6 @@ public class CAManager {
       
       // set up initial positions
       current_generation[generation_size / 2] = 1;
-      //System.out.println(Arrays.toString(current_generation));
-      //System.out.println(rule);
    }
    
    public void nextGeneration() {
@@ -27,7 +25,6 @@ public class CAManager {
          if(neighborhood > 7 || neighborhood < 0) {
             System.out.println("neighborhood was out of bounds :(");
          }
-         //System.out.print((byte)rule >> neighborhood);
          next_generation[i] = ((byte)rule >> neighborhood) & 0x01;
       }
       // get the edges
@@ -37,8 +34,6 @@ public class CAManager {
       int last_neighborhood = (current_generation[generation_size - 2] << 2) + (last << 1) + first;
       next_generation[0] = ((byte)rule >> first_neighborhood) & 0x01;
       next_generation[generation_size - 1] = ((byte)rule >> last_neighborhood) & 0x01;
-      //System.out.println();
-      //System.out.println(Arrays.toString(next_generation));
       current_generation = Arrays.copyOf(next_generation, generation_size);
    }
    
@@ -61,29 +56,9 @@ public class CAManager {
       Arrays.fill(current_generation, 0);
       current_generation[generation_size / 2] = 1;
    }
-   
-   
-   
-   
-//    public long nextGeneration() {
-//       long next_gen = 0;
-//       for(int i = 1; i < LONG_LENGTH - 1; i++) { // we'll carry over the first and last bits
-//          int bit = (rule >> cellAndNeighbors(i)) & 0x01;
-//          next_gen |= bit << i;
-//       } 
-//       long firstAndLast = ((cur_generation >> (LONG_LENGTH - 1)) & (long)0x01) + (cur_generation & (long)0x01);
-//       //System.out.println(firstAndLast);
-//       next_gen |= firstAndLast;
-//       cur_generation = next_gen;
-//       return next_gen;
-//    }
-   
-  //  public int cellAndNeighbors(int i) {
-//       if(i < 1 || i > (LONG_LENGTH - 2)) {
-//          throw new IllegalArgumentException("Attempting to access long outside of indices 1..62");
-//       }
-//       return (int)(cur_generation >> (i - 1)) & 0x07;
-//       
-//    }  
+
+   public void flip(int index) {
+      current_generation[index] ^= 0x01; 
+   }
    
 }
