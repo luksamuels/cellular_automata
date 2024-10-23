@@ -57,6 +57,15 @@ public class CAManager {
       current_generation[generation_size / 2] = 1;
    }
 
+   public void changeRule(int new_rule) {
+      if(rule > 255 || rule < 0) {
+         throw new IllegalArgumentException("Rule must be a value between 0-255");
+      }
+      this.rule = new_rule;
+      current_generation = new int[generation_size];
+      current_generation[generation_size / 2] = 1;
+   }
+
    public void flip(int index) {
       current_generation[index] ^= 0x01; 
    }

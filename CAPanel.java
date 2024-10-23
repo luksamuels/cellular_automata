@@ -4,6 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
@@ -16,7 +17,7 @@ public class CAPanel extends JPanel implements ActionListener, ObjectListener {
 
     private final Font buttonFont = new Font("Batang", Font.PLAIN, 18);
 
-    private int rule;
+    private int rule=  57;
     private int scale_size;
     private int board_size;
 
@@ -31,9 +32,9 @@ public class CAPanel extends JPanel implements ActionListener, ObjectListener {
     public CAPanel(int board_size, int scale_size) {
         // set up panel itself
         setLayout(null);
+        setMinimumSize(new Dimension(TOTAL_PRESCALE_WIDTH*scale_size, TOTAL_PRESCALE_HEIGHT * scale_size));
 
         // init fields
-        rule = 57;
         this.scale_size = scale_size;
         this.board_size = board_size;
 
@@ -63,9 +64,9 @@ public class CAPanel extends JPanel implements ActionListener, ObjectListener {
         initButton(advanceButton, new Color(0x0FC179), "advance");
 
         // The value scroller;
-        valueScroller = new SettableNumberScroller("Value: ", rule);
+        valueScroller = new SettableNumberScroller("Rule: ", rule);
         valueScroller.setBounds(11 * scale_size, 1 * scale_size, 6 * scale_size, 1 * scale_size);
-        // valueScroller.addObjectListener(this);
+        valueScroller.addObjectListener(this);
 
         add(titleCard);
         add(grid);
@@ -99,30 +100,23 @@ public class CAPanel extends JPanel implements ActionListener, ObjectListener {
             (3 * scale_size) - border_width, 
             (16 * scale_size) + (2*border_width), 
             (16 * scale_size) + (2*border_width));
-
-        // draw rectangles for buttons
-        // g.setColor(new Color(0x84E291));
-        // g.setColor(new Color(0x84, 0xE2, 0x91, 128));
-        // g.fillRect(10 * scale_size, 1 * scale_size, 1 * scale_size, 1 * scale_size); // left button
-        // g.fillRect(16 * scale_size, 1 * scale_size, 1 * scale_size, 1 * scale_size); // right button
-        // g.fillRect(12 * scale_size, 1 * scale_size, 3 * scale_size, 1 * scale_size);
-
-
     }
 
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("fill")) {
             grid.fill();
         } else if(e.getActionCommand().equals("reset")) {
-            grid.reset();
+            grid.reset(rule);
         } else if(e.getActionCommand().equals("advance")) {
             grid.advance();
         }
     }
 
-    public void notified(String s) {
+    public void notify(String s) {
         if(s.equals("value_changed")) {
-            grid = new CAGrid(board_size, board_size, valueScroller.getValue());
+            rule = valueScroller.getValue();
+            grid.reset(rule);
+            grid.fill();
             repaint();
         }
     }

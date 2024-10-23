@@ -10,7 +10,6 @@ public class CAGrid extends JPanel implements MouseListener {
 
     private int width;
     private int height;
-    private int rule;
 
     private int[][] grid;
     private int filledGenerations;
@@ -29,13 +28,12 @@ public class CAGrid extends JPanel implements MouseListener {
         // fields init
         this.width = width;
         this.height = height;
-        this.rule = rule;
 
         grid = null;
         filledGenerations = 0;
         isFresh = false;
         
-        reset();
+        reset(rule);
     }
 
     /*  -------------------------------- FUNCTIONALITY ----------------------------------
@@ -58,9 +56,9 @@ public class CAGrid extends JPanel implements MouseListener {
         }
     }
 
-    public void reset() {
+    public void reset(int new_rule) {
         grid = new int[height][width];
-        ca = new CAManager(rule, width);
+        ca = new CAManager(new_rule, width);
         isFresh = true;
         filledGenerations = 1;
         for(int i = 0; i < width; i++) {

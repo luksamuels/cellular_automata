@@ -12,12 +12,6 @@ public class CAFrame extends JFrame {
 
    public CAFrame() {
       // set up the frame
-      setVisible(true);
-      Insets windowsInsets = getInsets();
-      setBounds(100, 
-         100, 
-         CAPanel.TOTAL_PRESCALE_WIDTH * SCALE_SIZE + windowsInsets.left + windowsInsets.right,
-         CAPanel.TOTAL_PRESCALE_HEIGHT * SCALE_SIZE + windowsInsets.top + windowsInsets.bottom);
       setLayout(null);
       setResizable(false);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,8 +25,13 @@ public class CAFrame extends JFrame {
         );
       
       add(panel);
-      
-      
-      
+
+      // set it visible
+      setVisible(true);
+      Insets windowsInsets = getInsets();
+      setBounds(100, 
+         100, 
+         CAPanel.TOTAL_PRESCALE_WIDTH * SCALE_SIZE + windowsInsets.left + windowsInsets.right,
+         CAPanel.TOTAL_PRESCALE_HEIGHT * SCALE_SIZE + windowsInsets.top + windowsInsets.bottom);
    }
 }

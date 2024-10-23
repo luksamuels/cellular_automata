@@ -1,8 +1,7 @@
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 
 import java.awt.Color;
@@ -20,7 +19,7 @@ public class SettableNumberScroller extends JPanel implements ActionListener {
     private JLabel f_text;
     private JButton f_leftArrow;
     private JButton f_rightArrow;
-    private JTextArea f_valueDisplay;
+    private JTextField f_valueDisplay;
 
     private int f_lowBound = 0;
     private int f_highBound = Integer.MAX_VALUE;
@@ -28,77 +27,59 @@ public class SettableNumberScroller extends JPanel implements ActionListener {
     private List<ObjectListener> listeners;
 
     public SettableNumberScroller(String text, int defaultValue) {
-        Font myFont = new Font("Batang", Font.PLAIN, 18);
+        Font textFont = new Font("Batang", Font.PLAIN, 14);
+        Font buttonFont = new Font("Batang", Font.BOLD, 10);
     
         setLayout(null);
-        setFocusable(true);
+        setOpaque(false);
 
-        // this.value = defaultValue;
-        // this.listeners = new LinkedList<ObjectListener>();
+        this.value = defaultValue;
+        this.listeners = new LinkedList<ObjectListener>();
 
-        // f_text = new JLabel(text);
-        // f_text.setFont(myFont);
-        // f_text.setForeground(Color.BLACK);
-        // f_text.setHorizontalAlignment(JButton.LEFT);
+        f_text = new JLabel(text);
+        f_text.setFont(textFont);
+        f_text.setForeground(Color.BLACK);
+        f_text.setHorizontalAlignment(JButton.CENTER);
  
-        f_leftArrow = new JButton();
-         
-        f_leftArrow.setBorderPainted(false);
-        f_leftArrow.setContentAreaFilled(false);
-        f_leftArrow.setActionCommand("decrease");
-        f_leftArrow.addActionListener(this);
+        f_leftArrow = new JButton("<-");
+        buttonInit(f_leftArrow, "decrease", buttonFont);
+    
+        f_rightArrow = new JButton("->");
+        buttonInit(f_rightArrow, "increase", buttonFont);
 
-        // f_rightArrow = new JButton();
-        // f_rightArrow.setIcon(new ImageIcon("rightArrow.png"));
-        // f_rightArrow.setBorderPainted(false);
-        // f_rightArrow.setContentAreaFilled(false);
-        // f_rightArrow.setActionCommand("increase");
-        // f_rightArrow.addActionListener(this);
-
-        // f_valueDisplay = new JTextArea(Integer.toString(value));
-        // f_valueDisplay.setFont(myFont);
-        // f_valueDisplay.setEditable(false);
+        f_valueDisplay = new JTextField(Integer.toString(value), 3);
+        f_valueDisplay.setFont(textFont);
+        f_valueDisplay.setEditable(true);
+        f_valueDisplay.setFont(textFont);
+        f_valueDisplay.setActionCommand("updated");
+        f_valueDisplay.addActionListener(this);
 
         add(f_leftArrow);
-        // add(f_text);
-        // add(f_rightArrow);
-        // add(f_valueDisplay);
+        add(f_text);
+        add(f_rightArrow);
+        add(f_valueDisplay);
 
+    }
+
+    void buttonInit(JButton button, String actionCommand, Font f) {
+        button.setFont(f);
+        button.setBorderPainted(true);
+        button.setContentAreaFilled(true);
+        button.setActionCommand(actionCommand);
+        button.addActionListener(this);
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        setBackground(Color.DARK_GRAY);
-
-        // just draw rectangles for now?
-        int width = this.getWidth();
-        int height = this.getHeight();
-
-        // draw left arrow
-        // g.setColor(Color.RED);
-        // g.fillRect(0, 0, width / 6, height);
-        
-        // text area
-        g.setColor(Color.BLUE);
-        g.fillRect(width / 4, 0, width / 2, height);
-
-        // value area
-        g.setColor(Color.GREEN);
-        g.fillRect(7 * (width / 12), 0, width / 6, height);
-
-        // right arrow
-        g.setColor(Color.ORANGE);
-        g.fillRect(10 * (width / 12), 0, width / 6, height);
     }
 
     
     public void setBounds(int x, int y, int width, int height) {
         super.setBounds(x, y, width, height);
-        // f_leftArrow.setBounds(0, 0, width / 6, height);
-        // f_text.setBounds(width / 4, 0, width / 2, height);
-        // f_valueDisplay.setBounds(7 * (width / 12), 0, width / 6, height);
-        // f_rightArrow.setBounds(5 * (width / 6), 0, width / 6, height);
+        f_leftArrow.setBounds(0, 0, (width / 4), height);
+        f_text.setBounds(width / 4, 0, width / 3, height);
+        f_valueDisplay.setBounds((7 * (width / 12)) - 10, 3, width / 6, height - 6);
+        f_rightArrow.setBounds(3 * (width / 4), 0, (width / 4), height);
     }
 
     public void setValueBounds(int lower, int higher) {
@@ -117,6 +98,7 @@ public class SettableNumberScroller extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("increase")) { value++; }
         if(e.getActionCommand().equals("decrease")) { value--; }
+        if(e.getActionCommand().equals("updated")) { value = Integer.parseInt(f_valueDisplay.getText()); }
         // verify and send
         if(value < f_lowBound) {
             value = f_highBound - 1;
@@ -131,7 +113,7 @@ public class SettableNumberScroller extends JPanel implements ActionListener {
     // notifies all listeners that the value was updated.
     private void notifyListeners(String s) {
         for(ObjectListener o : listeners) {
-            o.notified(s);
+            o.notify(s);
         }
     }
 }
